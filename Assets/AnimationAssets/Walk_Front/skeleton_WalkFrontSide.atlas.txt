@@ -1,0 +1,153 @@
+
+skeleton_WalkFrontSide.png
+size: 1829,737
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1769401218308
+  rotate: false
+  xy: 2, 2
+  size: 67, 158
+  orig: 700, 700
+  offset: 373, 318
+  index: -1
+1769401221174
+  rotate: false
+  xy: 263, 2
+  size: 67, 157
+  orig: 700, 700
+  offset: 260, 319
+  index: -1
+1769401224386
+  rotate: false
+  xy: 524, 2
+  size: 72, 132
+  orig: 700, 700
+  offset: 262, 188
+  index: -1
+1769401227257
+  rotate: false
+  xy: 785, 2
+  size: 72, 132
+  orig: 700, 700
+  offset: 366, 188
+  index: -1
+1769401230000
+  rotate: false
+  xy: 1046, 2
+  size: 52, 125
+  orig: 700, 700
+  offset: 347, 95
+  index: -1
+1769401232882
+  rotate: false
+  xy: 1307, 2
+  size: 51, 129
+  orig: 700, 700
+  offset: 300, 93
+  index: -1
+1769401237149
+  rotate: false
+  xy: 1568, 2
+  size: 125, 143
+  orig: 700, 700
+  offset: 287, 191
+  index: -1
+1769401240936
+  rotate: false
+  xy: 2, 247
+  size: 259, 243
+  orig: 700, 700
+  offset: 220, 322
+  index: -1
+1769401244013
+  rotate: false
+  xy: 263, 247
+  size: 117, 20
+  orig: 700, 700
+  offset: 292, 419
+  index: -1
+1769401247089
+  rotate: false
+  xy: 524, 247
+  size: 157, 32
+  orig: 700, 700
+  offset: 271, 382
+  index: -1
+1769401250143
+  rotate: false
+  xy: 785, 247
+  size: 61, 58
+  orig: 700, 700
+  offset: 261, 545
+  index: -1
+1769401252906
+  rotate: false
+  xy: 1046, 247
+  size: 107, 205
+  orig: 700, 700
+  offset: 196, 353
+  index: -1
+1769401255543
+  rotate: false
+  xy: 1307, 247
+  size: 63, 134
+  orig: 700, 700
+  offset: 256, 404
+  index: -1
+1769401258220
+  rotate: false
+  xy: 1568, 247
+  size: 97, 124
+  orig: 700, 700
+  offset: 300, 410
+  index: -1
+1769401281923
+  rotate: false
+  xy: 2, 492
+  size: 135, 194
+  orig: 700, 700
+  offset: 360, 362
+  index: -1
+1769401284804
+  rotate: false
+  xy: 263, 492
+  size: 88, 121
+  orig: 700, 700
+  offset: 352, 415
+  index: -1
+1769401288425
+  rotate: false
+  xy: 524, 492
+  size: 19, 59
+  orig: 700, 700
+  offset: 362, 245
+  index: -1
+1769401291245
+  rotate: false
+  xy: 785, 492
+  size: 18, 60
+  orig: 700, 700
+  offset: 318, 244
+  index: -1
+1769401294192
+  rotate: false
+  xy: 1046, 492
+  size: 251, 186
+  orig: 700, 700
+  offset: 223, 391
+  index: -1
+1769401301289
+  rotate: false
+  xy: 1307, 492
+  size: 201, 52
+  orig: 700, 700
+  offset: 248, 470
+  index: -1
+1769408720926
+  rotate: false
+  xy: 1568, 492
+  size: 107, 16
+  orig: 700, 700
+  offset: 296, 388
+  index: -1
