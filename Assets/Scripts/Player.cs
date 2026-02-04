@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using InventorySystem;
 
 /// <summary>
 /// 玩家控制器
@@ -19,6 +20,7 @@ public class Player : MonoBehaviour
     [Header("物品交互")]
     private ItemInteractor itemInteractor;  //捡东西时候用
     private ItemPickupHandler pickupHandler;//放东西时候用
+    private InventoryManager inventoryManager; // 物品栏
 
     private bool isCooldown = false;
     private float cooldownTime = 0.1f;
@@ -31,6 +33,7 @@ public class Player : MonoBehaviour
         // 获取组件引用
         itemInteractor = GetComponent<ItemInteractor>();
         pickupHandler = GetComponent<ItemPickupHandler>();
+        inventoryManager = GetComponent<InventoryManager>();
 
         // 如果没有，自动添加
         if (itemInteractor == null)
@@ -40,6 +43,10 @@ public class Player : MonoBehaviour
         if (pickupHandler == null)
         {
             pickupHandler = gameObject.AddComponent<ItemPickupHandler>();
+        }
+        if (inventoryManager == null)
+        {
+            inventoryManager = InventoryManager.Instance;
         }
     }
 
@@ -113,12 +120,30 @@ public class Player : MonoBehaviour
                 StartCoroutine(Cooldown());
             }
         }
-        // 放置物品
-        else if (pickupHandler.HeldItem != null)
+        // 放置物品（从物品栏丢弃当前选中的物品）
+        else if (inventoryManager != null)
         {
-            Vector3 dropPos = transform.position + transform.forward * 2f;
-            pickupHandler.DropItem(dropPos);
-            StartCoroutine(Cooldown());
+            Item selectedItem = inventoryManager.GetSelectedItem();
+            if (selectedItem != null)
+            {
+                Vector3 dropPos = transform.position + transform.forward * 2f;
+                DropSelectedItem(dropPos);
+                StartCoroutine(Cooldown());
+            }
+        }
+    }
+
+    /// <summary>
+    /// 丢弃当前选中的物品
+    /// </summary>
+    private void DropSelectedItem(Vector3 dropPosition)
+    {
+        Item item = inventoryManager.RemoveItem(inventoryManager.SelectedIndex);
+        if (item != null)
+        {
+            item.gameObject.SetActive(true);
+            item.OnDropped(dropPosition);
+            Debug.Log($"丢弃物品: {item.itemName}");
         }
     }
 
