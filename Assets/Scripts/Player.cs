@@ -102,7 +102,7 @@ public class Player : MonoBehaviour
     /// </summary>
     private void HandleItemInteraction()
     {
-        if (!Input.GetKeyDown(KeyCode.F) || isCooldown) return;
+        if (!Input.GetKeyDown(KeyCode.Space) || isCooldown) return;
 
         // 拾取物品
         if (itemInteractor.HasItemInRange())

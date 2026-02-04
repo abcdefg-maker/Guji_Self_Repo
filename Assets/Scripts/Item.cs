@@ -31,6 +31,10 @@ public class Item : MonoBehaviour
     [Tooltip("物品类型")]
     public ItemType itemType = ItemType.Material;
 
+    [Header("物品栏显示")]
+    [Tooltip("物品图标（用于UI显示）")]
+    public Sprite itemIcon;
+
     [Header("拾取设置")]
     [Tooltip("是否可以被拾取")]
     public bool canBePickedUp = true;
@@ -64,9 +68,22 @@ public class Item : MonoBehaviour
         isPickedUp = false;
         currentHolder = null;
 
-        // 恢复物品到场景
+        // 获取当前手的世界坐标
+        Vector3 currentPos = transform.position;
+
+        // 解除父子关系
         transform.SetParent(null);
-        transform.position = dropPosition;
+
+        // 使用射线检测地面，从当前位置向下发射
+        Vector3 finalPosition = currentPos;
+        Ray ray = new Ray(new Vector3(currentPos.x, currentPos.y + 1f, currentPos.z), Vector3.down);
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        {
+            // X、Z 保持手的位置，Y 稍微高于地面
+            finalPosition = new Vector3(currentPos.x, hit.point.y + 0.1f, currentPos.z);
+        }
+
+        transform.position = finalPosition;
 
         // 恢复碰撞体
         var collider = GetComponent<Collider>();
@@ -75,7 +92,16 @@ public class Item : MonoBehaviour
             collider.enabled = true;
         }
 
-        Debug.Log($"{itemName} was dropped at {dropPosition}");
+        // 冻结 Rigidbody，防止物品移动
+        var rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+        }
+
+        Debug.Log($"{itemName} was dropped at {finalPosition}");
     }
 }
 

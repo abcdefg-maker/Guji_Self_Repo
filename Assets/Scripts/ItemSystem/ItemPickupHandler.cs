@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using InventorySystem;
 
 /// <summary>
 /// 物品拾取处理器 - 负责执行拾取逻辑
@@ -7,7 +8,10 @@ using UnityEngine;
 /// </summary>
 public class ItemPickupHandler : MonoBehaviour
 {
-    [Header("当前持有的物品")]
+    [Header("物品栏")]
+    [SerializeField] private InventoryManager inventoryManager;
+
+    [Header("当前持有的物品（兼容旧系统）")]
     public Item heldItem;
     public Item HeldItem => heldItem;
 
@@ -39,6 +43,16 @@ public class ItemPickupHandler : MonoBehaviour
             handGO.transform.localPosition = new Vector3(0.5f, 1f, 0.5f);
             handPosition = handGO.transform;
         }
+
+        // 查找物品栏管理器
+        if (inventoryManager == null)
+        {
+            inventoryManager = GetComponent<InventoryManager>();
+            if (inventoryManager == null)
+            {
+                inventoryManager = InventoryManager.Instance;
+            }
+        }
     }
 
     /// <summary>
@@ -52,11 +66,25 @@ public class ItemPickupHandler : MonoBehaviour
             return false;
         }
 
-        // 2. 标记物品为已拾取状态
+        // 2. 优先添加到物品栏
+        if (inventoryManager != null)
+        {
+            if (inventoryManager.AddItem(item))
+            {
+                item.OnPickedUp(picker);
+                Debug.Log($"{picker.name} 拾取 {item.itemName} 到物品栏");
+                return true;
+            }
+            else
+            {
+                Debug.Log("物品栏已满，无法拾取");
+                return false;
+            }
+        }
+
+        // 3. 没有物品栏时，使用旧的手持逻辑
         item.OnPickedUp(picker);
         heldItem = item;
-
-        // 3. 执行所有拾取效果
         ExecuteAllEffects(item, picker);
 
         Debug.Log($"{picker.name} picked up {item.itemName}");

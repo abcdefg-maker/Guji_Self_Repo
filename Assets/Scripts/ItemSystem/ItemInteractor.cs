@@ -11,6 +11,9 @@ public class ItemInteractor : MonoBehaviour
     [Tooltip("检测范围半径")]
     public float detectionRadius = 2f;
 
+    [Tooltip("检测中心偏移（相对于自身位置）")]
+    public Vector3 detectionOffset = Vector3.zero;
+
     [Tooltip("物品所在的Layer")]
     public LayerMask itemLayer;
 
@@ -64,8 +67,9 @@ public class ItemInteractor : MonoBehaviour
     /// </summary>
     private void DetectByOverlapSphere()
     {
+        Vector3 detectionCenter = transform.position + detectionOffset;
         Collider[] colliders = Physics.OverlapSphere(
-            transform.position,
+            detectionCenter,
             detectionRadius,
             itemLayer
         );
@@ -85,7 +89,19 @@ public class ItemInteractor : MonoBehaviour
     /// </summary>
     private void DetectByTrigger()
     {
-        nearbyItems.AddRange(triggeredItems);
+        Vector3 detectionCenter = transform.position + detectionOffset;
+        foreach (var item in triggeredItems)
+        {
+            // 过滤掉已被拾取的物品，并检查距离
+            if (item != null && item.canBePickedUp && !item.IsPickedUp)
+            {
+                float distance = Vector3.Distance(detectionCenter, item.transform.position);
+                if (distance <= detectionRadius)
+                {
+                    nearbyItems.Add(item);
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -125,12 +141,13 @@ public class ItemInteractor : MonoBehaviour
     /// </summary>
     private Item GetNearestItem()
     {
+        Vector3 detectionCenter = transform.position + detectionOffset;
         Item nearest = nearbyItems[0];
-        float minDist = Vector3.Distance(transform.position, nearest.transform.position);
+        float minDist = Vector3.Distance(detectionCenter, nearest.transform.position);
 
         for (int i = 1; i < nearbyItems.Count; i++)
         {
-            float dist = Vector3.Distance(transform.position, nearbyItems[i].transform.position);
+            float dist = Vector3.Distance(detectionCenter, nearbyItems[i].transform.position);
             if (dist < minDist)
             {
                 minDist = dist;
@@ -202,8 +219,9 @@ public class ItemInteractor : MonoBehaviour
         if (!showDebugGizmos) return;
 
         // 绘制检测范围
+        Vector3 detectionCenter = transform.position + detectionOffset;
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        Gizmos.DrawWireSphere(detectionCenter, detectionRadius);
 
         // 绘制目标物品连线
         if (targetItem != null)
