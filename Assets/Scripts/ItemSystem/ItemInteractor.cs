@@ -1,12 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Core.Items;
 
-/// <summary>
-/// 物品交互器 - 负责检测和选择物品
-/// 可复用：任何GameObject都能添加此组件来获得拾取能力
-/// </summary>
-public class ItemInteractor : MonoBehaviour
+namespace ItemSystem
 {
+    /// <summary>
+    /// 物品交互器 - 负责检测和选择物品
+    /// 可复用：任何GameObject都能添加此组件来获得拾取能力
+    /// </summary>
+    public class ItemInteractor : MonoBehaviour
+    {
     [Header("检测设置")]
     [Tooltip("检测范围半径")]
     public float detectionRadius = 2f;
@@ -230,16 +233,17 @@ public class ItemInteractor : MonoBehaviour
             Gizmos.DrawLine(transform.position, targetItem.transform.position);
         }
     }
-}
 
-public enum DetectionMode
-{
-    OverlapSphere,  // 使用Physics.OverlapSphere
-    Trigger         // 使用OnTriggerEnter/Exit
-}
+    public enum DetectionMode
+    {
+        OverlapSphere,  // 使用Physics.OverlapSphere
+        Trigger         // 使用OnTriggerEnter/Exit
+    }
 
-public enum SelectionStrategy
-{
-    Nearest,        // 最近的物品
-    First           // 第一个检测到的
+    public enum SelectionStrategy
+    {
+        Nearest,        // 最近的物品
+        First           // 第一个检测到的
+    }
+}
 }

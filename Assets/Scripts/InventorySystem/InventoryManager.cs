@@ -1,36 +1,70 @@
 using System;
 using UnityEngine;
 using ToolSystem;
+using Core.Items;
+using Core.Interfaces;
+using ItemSystem;
 
 namespace InventorySystem
 {
     /// <summary>
     /// 物品栏管理器
     /// </summary>
-    public class InventoryManager : MonoBehaviour
+    public class InventoryManager : MonoBehaviour, IInventory
     {
+        #region Singleton
         public static InventoryManager Instance { get; private set; }
+        #endregion
 
+        #region Serialized Fields
         [Header("槽位设置")]
         [SerializeField] private int maxSlots = 10;
-        public int MaxSlots => maxSlots;
 
         [SerializeField] private InventorySlot[] slots;
-        public InventorySlot[] Slots => slots;
 
         [Header("选中状态")]
         [SerializeField] private int selectedIndex = 0;
-        public int SelectedIndex => selectedIndex;
 
         [Header("装备设置")]
         [SerializeField] private Transform handPosition;
+        #endregion
+
+        #region Private Fields
         private ToolItem currentEquippedTool;
+        #endregion
 
-        // 事件
-        public event Action<int> OnSlotChanged;          // 槽位内容变化
-        public event Action<int> OnSelectionChanged;     // 选中槽位变化
+        #region Public Properties
+        public int MaxSlots => maxSlots;
+        public InventorySlot[] Slots => slots;
+        public int SelectedIndex => selectedIndex;
+        #endregion
 
+        #region Events
+        public event Action<int> OnSlotChanged;
+        public event Action<int> OnSelectionChanged;
+        #endregion
+
+        #region Unity Lifecycle
         private void Awake()
+        {
+            InitializeSingleton();
+            InitializeSlots();
+        }
+
+        private void Start()
+        {
+            InitializeHandPosition();
+            SelectSlot(0);
+        }
+
+        private void Update()
+        {
+            HandleInput();
+        }
+        #endregion
+
+        #region Initialization
+        private void InitializeSingleton()
         {
             if (Instance == null)
             {
@@ -39,36 +73,9 @@ namespace InventorySystem
             else
             {
                 Destroy(gameObject);
-                return;
             }
-
-            InitializeSlots();
         }
 
-        private void Start()
-        {
-            // 查找手部位置
-            if (handPosition == null)
-            {
-                var handler = GetComponent<ItemPickupHandler>();
-                if (handler != null)
-                {
-                    handPosition = handler.handPosition;
-                }
-            }
-
-            // 默认选中第一个槽位
-            SelectSlot(0);
-        }
-
-        private void Update()
-        {
-            HandleInput();
-        }
-
-        /// <summary>
-        /// 初始化槽位
-        /// </summary>
         private void InitializeSlots()
         {
             slots = new InventorySlot[maxSlots];
@@ -78,12 +85,28 @@ namespace InventorySystem
             }
         }
 
-        /// <summary>
-        /// 处理输入
-        /// </summary>
+        private void InitializeHandPosition()
+        {
+            if (handPosition == null)
+            {
+                var handler = GetComponent<ItemPickupHandler>();
+                if (handler != null)
+                {
+                    handPosition = handler.handPosition;
+                }
+            }
+        }
+        #endregion
+
+        #region Input Handling
         private void HandleInput()
         {
-            // 数字键1-9选择槽位1-9
+            HandleNumberKeyInput();
+            HandleScrollWheelInput();
+        }
+
+        private void HandleNumberKeyInput()
+        {
             for (int i = 1; i <= 9; i++)
             {
                 if (Input.GetKeyDown(KeyCode.Alpha1 + i - 1))
@@ -93,14 +116,14 @@ namespace InventorySystem
                 }
             }
 
-            // 数字键0选择槽位10
             if (Input.GetKeyDown(KeyCode.Alpha0))
             {
                 SelectSlot(9);
-                return;
             }
+        }
 
-            // 滚轮切换
+        private void HandleScrollWheelInput()
+        {
             float scroll = Input.GetAxis("Mouse ScrollWheel");
             if (scroll > 0f)
             {
@@ -111,57 +134,20 @@ namespace InventorySystem
                 SelectSlot((selectedIndex + 1) % maxSlots);
             }
         }
+        #endregion
 
-        /// <summary>
-        /// 添加物品到物品栏
-        /// </summary>
+        #region IInventory Implementation
         public bool AddItem(Item item)
         {
             if (item == null) return false;
 
-            // 1. 尝试堆叠到已有槽位
-            if (item.itemType != ItemType.Tool)
-            {
-                for (int i = 0; i < maxSlots; i++)
-                {
-                    if (slots[i].CanStackWith(item))
-                    {
-                        slots[i].AddCount(1);
-                        item.gameObject.SetActive(false);
-                        OnSlotChanged?.Invoke(i);
-                        Debug.Log($"物品 {item.itemName} 堆叠到槽位 {i + 1}");
-                        return true;
-                    }
-                }
-            }
-
-            // 2. 找空槽位
-            for (int i = 0; i < maxSlots; i++)
-            {
-                if (slots[i].IsEmpty)
-                {
-                    slots[i].SetItem(item, 1);
-                    item.gameObject.SetActive(false);
-                    OnSlotChanged?.Invoke(i);
-                    Debug.Log($"物品 {item.itemName} 放入槽位 {i + 1}");
-
-                    // 如果是当前选中槽位且是工具，自动装备
-                    if (i == selectedIndex && item.itemType == ItemType.Tool)
-                    {
-                        EquipTool(item as ToolItem);
-                    }
-
-                    return true;
-                }
-            }
+            if (TryStackItem(item)) return true;
+            if (TryAddToEmptySlot(item)) return true;
 
             Debug.Log("物品栏已满！");
             return false;
         }
 
-        /// <summary>
-        /// 移除指定槽位的物品
-        /// </summary>
         public Item RemoveItem(int index, int amount = 1)
         {
             if (index < 0 || index >= maxSlots) return null;
@@ -170,7 +156,6 @@ namespace InventorySystem
             Item item = slots[index].itemRef;
             slots[index].RemoveCount(amount);
 
-            // 如果是当前装备的工具，卸下
             if (item is ToolItem tool && tool == currentEquippedTool)
             {
                 UnequipTool();
@@ -180,9 +165,12 @@ namespace InventorySystem
             return item;
         }
 
-        /// <summary>
-        /// 选择槽位
-        /// </summary>
+        public Item GetSelectedItem()
+        {
+            if (selectedIndex < 0 || selectedIndex >= maxSlots) return null;
+            return slots[selectedIndex].itemRef;
+        }
+
         public void SelectSlot(int index)
         {
             if (index < 0 || index >= maxSlots) return;
@@ -190,7 +178,6 @@ namespace InventorySystem
             int oldIndex = selectedIndex;
             selectedIndex = index;
 
-            // 切换装备的工具
             UnequipTool();
 
             var slot = slots[selectedIndex];
@@ -206,9 +193,65 @@ namespace InventorySystem
             }
         }
 
-        /// <summary>
-        /// 装备工具
-        /// </summary>
+        public bool IsFull()
+        {
+            for (int i = 0; i < maxSlots; i++)
+            {
+                if (slots[i].IsEmpty) return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region Slot Management
+        private bool TryStackItem(Item item)
+        {
+            if (item.itemType == ItemType.Tool) return false;
+
+            for (int i = 0; i < maxSlots; i++)
+            {
+                if (slots[i].CanStackWith(item))
+                {
+                    slots[i].AddCount(1);
+                    item.gameObject.SetActive(false);
+                    OnSlotChanged?.Invoke(i);
+                    Debug.Log($"物品 {item.itemName} 堆叠到槽位 {i + 1}");
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool TryAddToEmptySlot(Item item)
+        {
+            for (int i = 0; i < maxSlots; i++)
+            {
+                if (slots[i].IsEmpty)
+                {
+                    slots[i].SetItem(item, 1);
+                    item.gameObject.SetActive(false);
+                    OnSlotChanged?.Invoke(i);
+                    Debug.Log($"物品 {item.itemName} 放入槽位 {i + 1}");
+
+                    if (i == selectedIndex && item.itemType == ItemType.Tool)
+                    {
+                        EquipTool(item as ToolItem);
+                    }
+
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public InventorySlot GetSlot(int index)
+        {
+            if (index < 0 || index >= maxSlots) return null;
+            return slots[index];
+        }
+        #endregion
+
+        #region Tool Equipment
         private void EquipTool(ToolItem tool)
         {
             if (tool == null) return;
@@ -226,9 +269,6 @@ namespace InventorySystem
             Debug.Log($"装备工具: {tool.itemName}");
         }
 
-        /// <summary>
-        /// 卸下工具
-        /// </summary>
         private void UnequipTool()
         {
             if (currentEquippedTool != null)
@@ -238,42 +278,10 @@ namespace InventorySystem
             }
         }
 
-        /// <summary>
-        /// 获取当前选中的物品
-        /// </summary>
-        public Item GetSelectedItem()
-        {
-            if (selectedIndex < 0 || selectedIndex >= maxSlots) return null;
-            return slots[selectedIndex].itemRef;
-        }
-
-        /// <summary>
-        /// 获取当前装备的工具
-        /// </summary>
         public ToolItem GetEquippedTool()
         {
             return currentEquippedTool;
         }
-
-        /// <summary>
-        /// 检查物品栏是否已满
-        /// </summary>
-        public bool IsFull()
-        {
-            for (int i = 0; i < maxSlots; i++)
-            {
-                if (slots[i].IsEmpty) return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// 获取指定槽位
-        /// </summary>
-        public InventorySlot GetSlot(int index)
-        {
-            if (index < 0 || index >= maxSlots) return null;
-            return slots[index];
-        }
+        #endregion
     }
 }

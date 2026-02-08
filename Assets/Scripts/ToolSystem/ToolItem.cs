@@ -1,12 +1,15 @@
 using UnityEngine;
 using ToolSystem.Actions;
+using Core.Constants;
+using Core.Items;
+using Core.Interfaces;
 
 namespace ToolSystem
 {
     /// <summary>
     /// 工具物品基类 - 继承自Item
     /// </summary>
-    public class ToolItem : Item
+    public class ToolItem : Item, IEquippable
     {
         [Header("工具设置")]
         [Tooltip("工具类型")]
@@ -17,6 +20,9 @@ namespace ToolSystem
         [Tooltip("该工具可执行的行为（ScriptableObject配置）")]
         [SerializeField] protected ScriptableToolAction toolAction;
         public ScriptableToolAction ToolAction => toolAction;
+
+        private bool isEquipped = false;
+        public bool IsEquipped => isEquipped;
 
         protected virtual void Awake()
         {
@@ -45,9 +51,17 @@ namespace ToolSystem
         /// </summary>
         protected virtual IToolTarget DetectTarget()
         {
+            // 安全检查 Camera.main
+            Camera mainCamera = Camera.main;
+            if (mainCamera == null)
+            {
+                Debug.LogWarning("[ToolItem] Camera.main is null!");
+                return null;
+            }
+
             // 从鼠标位置发射射线检测目标
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, GameConstants.DefaultRaycastDistance))
             {
                 Debug.Log("Interacted with " + hit.collider.name);
                 return hit.collider.GetComponent<IToolTarget>();
@@ -82,5 +96,34 @@ namespace ToolSystem
 
             Debug.Log($"{user.name} 使用了 {itemName}");
         }
+
+        #region IEquippable Implementation
+        /// <summary>
+        /// 装备工具到指定手部位置
+        /// </summary>
+        public virtual void Equip(Transform hand)
+        {
+            if (hand == null) return;
+
+            isEquipped = true;
+            gameObject.SetActive(true);
+            transform.SetParent(hand);
+            transform.localPosition = attachOffset;
+            transform.localRotation = Quaternion.identity;
+
+            Debug.Log($"装备工具: {itemName}");
+        }
+
+        /// <summary>
+        /// 卸下工具
+        /// </summary>
+        public virtual void Unequip()
+        {
+            isEquipped = false;
+            gameObject.SetActive(false);
+
+            Debug.Log($"卸下工具: {itemName}");
+        }
+        #endregion
     }
 }

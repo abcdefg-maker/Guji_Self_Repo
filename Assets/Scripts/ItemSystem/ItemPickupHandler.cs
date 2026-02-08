@@ -1,13 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using InventorySystem;
+using Core.Items;
+using ItemSystem.Conditions;
+using ItemSystem.Effects;
 
-/// <summary>
-/// 物品拾取处理器 - 负责执行拾取逻辑
-/// 可扩展：通过添加条件和效果来自定义拾取行为
-/// </summary>
-public class ItemPickupHandler : MonoBehaviour
+namespace ItemSystem
 {
+    /// <summary>
+    /// 物品拾取处理器 - 负责执行拾取逻辑
+    /// 可扩展：通过添加条件和效果来自定义拾取行为
+    /// </summary>
+    public class ItemPickupHandler : MonoBehaviour
+    {
     [Header("物品栏")]
     [SerializeField] private InventoryManager inventoryManager;
 
@@ -135,4 +140,5 @@ public class ItemPickupHandler : MonoBehaviour
         heldItem.OnDropped(dropPosition);
         heldItem = null;
     }
+}
 }
