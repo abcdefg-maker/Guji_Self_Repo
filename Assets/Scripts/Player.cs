@@ -4,6 +4,7 @@ using InventorySystem;
 using Core.Constants;
 using Core.Items;
 using ItemSystem;
+using FarmingSystem;
 
 namespace Core.Player
 {
@@ -41,6 +42,7 @@ namespace Core.Player
         {
             HandleMovementInput();
             HandleItemInteraction();
+            HandleSeedPlanting();
         }
 
         private void FixedUpdate()
@@ -147,6 +149,69 @@ namespace Core.Player
             isCooldown = true;
             yield return new WaitForSeconds(cooldownTime);
             isCooldown = false;
+        }
+        #endregion
+
+        #region Seed Planting
+        /// <summary>
+        /// 处理种子种植
+        /// </summary>
+        private void HandleSeedPlanting()
+        {
+            // 鼠标左键点击时检测
+            if (!Input.GetMouseButtonDown(0)) return;
+            if (inventoryManager == null) return;
+
+            // 检查当前选中的物品是否是种子
+            Item selectedItem = inventoryManager.GetSelectedItem();
+            if (selectedItem == null) return;
+            if (selectedItem.itemType != ItemType.Seed) return;
+
+            // 获取种子的CropData
+            SeedItem seedItem = selectedItem as SeedItem;
+            if (seedItem == null || seedItem.CropData == null) return;
+
+            // 射线检测土堆
+            SoilMound targetMound = DetectSoilMound();
+            if (targetMound == null) return;
+
+            // 检查土堆是否为空
+            if (!targetMound.IsEmpty)
+            {
+                Debug.Log("[Player] 土堆已有作物，无法种植");
+                return;
+            }
+
+            // 检查距离
+            float distance = Vector3.Distance(transform.position, targetMound.transform.position);
+            if (distance > 5f) // 种植距离
+            {
+                Debug.Log("[Player] 距离太远，无法种植");
+                return;
+            }
+
+            // 尝试种植
+            if (targetMound.TryPlant(seedItem.CropData, gameObject))
+            {
+                // 种植成功，消耗种子
+                inventoryManager.RemoveItem(inventoryManager.SelectedIndex, 1);
+                Debug.Log($"[Player] 种植了 {seedItem.CropData.cropName}");
+            }
+        }
+
+        /// <summary>
+        /// 检测鼠标位置的土堆
+        /// </summary>
+        private SoilMound DetectSoilMound()
+        {
+            if (mainCamera == null) return null;
+
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, GameConstants.DefaultRaycastDistance))
+            {
+                return hit.collider.GetComponent<SoilMound>();
+            }
+            return null;
         }
         #endregion
     }

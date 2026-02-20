@@ -84,6 +84,11 @@ namespace Core.Items
             currentHolder = null;
 
             DetachFromParent();
+
+            // 先将物品移动到丢弃位置
+            transform.position = dropPosition;
+
+            // 然后调整到地面高度
             PositionOnGround();
             RestorePhysicsState();
 
