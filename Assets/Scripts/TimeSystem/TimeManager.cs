@@ -30,6 +30,11 @@ namespace TimeSystem
         public bool IsPaused => isPaused;
 
         /// <summary>
+        /// 当前小时内的分钟数 (0-60)，用于模拟时钟分针
+        /// </summary>
+        public float CurrentMinute => (hourLength > 0f) ? (hourTimer / hourLength) * 60f : 0f;
+
+        /// <summary>
         /// 获取当前季节内的第几天 (1-16)
         /// </summary>
         public int DayInSeason => ((currentDay - 1) % daysPerSeason) + 1;

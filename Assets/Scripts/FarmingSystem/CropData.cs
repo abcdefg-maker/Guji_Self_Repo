@@ -33,7 +33,7 @@ namespace FarmingSystem
 
         [Header("视觉表现")]
         [Tooltip("各生长阶段的精灵图 (5个: Seed, Sprout, Growing, Mature, Harvestable)")]
-        public Sprite[] stageSprites = new Sprite[4];
+        public Sprite[] stageSprites = new Sprite[5];
 
         [Header("收获配置")]
         [Tooltip("收获物品的Prefab")]
