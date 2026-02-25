@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using ToolSystem;
 using Core.Items;
+using Core.Constants;
 using Core.Interfaces;
 using ItemSystem;
 
@@ -18,7 +19,7 @@ namespace InventorySystem
 
         #region Serialized Fields
         [Header("槽位设置")]
-        [SerializeField] private int maxSlots = 10;
+        [SerializeField] private int maxSlots = GameConstants.DefaultMaxSlots;
 
         [SerializeField] private InventorySlot[] slots;
 
@@ -37,6 +38,8 @@ namespace InventorySystem
         public int MaxSlots => maxSlots;
         public InventorySlot[] Slots => slots;
         public int SelectedIndex => selectedIndex;
+        public int HotbarSize => GameConstants.HotbarSlots;
+        public int BackpackStartIndex => HotbarSize;
         #endregion
 
         #region Events

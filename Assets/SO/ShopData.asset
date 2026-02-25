@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72c8a5286fcc05349a3845687a8ea901, type: 3}
+  m_Name: ShopData
+  m_EditorClassIdentifier: 
+  shopID: shop_001
+  shopName: "\u6742\u8D27\u5E97"
+  description: 
+  buyableItems:
+  - itemPrefab: {fileID: 3206713177913792461, guid: 48fe8b2ba66c76745afbcc44279e5fd8, type: 3}
+    displayName: Carrot
+    icon: {fileID: 21300000, guid: b7c2558d12b15ba4db1c97776df047d8, type: 3}
+    buyPrice: 10
+    sellPrice: 10
+    dailyStockLimit: 99999999
+    currentStock: 0
+  - itemPrefab: {fileID: 0}
+    displayName: 
+    icon: {fileID: 0}
+    buyPrice: 0
+    sellPrice: 0
+    dailyStockLimit: 0
+    currentStock: 0
+  - itemPrefab: {fileID: 0}
+    displayName: 
+    icon: {fileID: 0}
+    buyPrice: 0
+    sellPrice: 0
+    dailyStockLimit: 0
+    currentStock: 0
+  - itemPrefab: {fileID: 0}
+    displayName: 
+    icon: {fileID: 0}
+    buyPrice: 0
+    sellPrice: 0
+    dailyStockLimit: 0
+    currentStock: 0
+  acceptedSellTypes: 040000000300000000000000
+  sellPriceMultiplier: 1

@@ -36,6 +36,10 @@ namespace Core.Items
         [Tooltip("物品图标（用于UI显示）")]
         public Sprite itemIcon;
 
+        [Header("经济属性")]
+        [Tooltip("出售价格，0表示不可出售")]
+        public int sellPrice = 0;
+
         [Header("拾取设置")]
         [Tooltip("是否可以被拾取")]
         public bool canBePickedUp = true;

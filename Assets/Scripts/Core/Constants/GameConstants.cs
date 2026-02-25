@@ -46,9 +46,19 @@ namespace Core.Constants
         #region Inventory
 
         /// <summary>
-        /// Default number of inventory slots
+        /// Default number of inventory slots (40 backpack + 10 hotbar)
         /// </summary>
-        public const int DefaultMaxSlots = 10;
+        public const int DefaultMaxSlots = 50;
+
+        /// <summary>
+        /// Number of hotbar slots
+        /// </summary>
+        public const int HotbarSlots = 10;
+
+        /// <summary>
+        /// Number of backpack slots
+        /// </summary>
+        public const int BackpackSlots = 40;
 
         /// <summary>
         /// Default max stack size for stackable items
@@ -59,6 +69,25 @@ namespace Core.Constants
         /// Max stack size for tools (non-stackable)
         /// </summary>
         public const int ToolMaxStack = 1;
+
+        #endregion
+
+        #region Shop
+
+        /// <summary>
+        /// Default starting gold for the player
+        /// </summary>
+        public const int DefaultStartingGold = 500;
+
+        /// <summary>
+        /// Scatter radius when dropping items near shop
+        /// </summary>
+        public const float ShopDropScatterRadius = 1.5f;
+
+        /// <summary>
+        /// Duration for transaction feedback messages
+        /// </summary>
+        public const float TransactionMessageDuration = 2f;
 
         #endregion
     }
