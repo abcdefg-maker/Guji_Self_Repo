@@ -52,7 +52,7 @@ namespace ShopSystem
             if (backgroundImage == null)
                 backgroundImage = GetComponent<Image>();
             if (countText == null)
-                countText = GetComponentInChildren<TextMeshProUGUI>();
+                countText = GetComponentInChildren<TextMeshProUGUI>(true);
             if (slotButton == null)
                 slotButton = GetComponent<Button>();
 
@@ -96,11 +96,11 @@ namespace ShopSystem
                 if (slot.count > 1)
                 {
                     countText.text = slot.count.ToString();
-                    countText.enabled = true;
+                    countText.gameObject.SetActive(true);
                 }
                 else
                 {
-                    countText.enabled = false;
+                    countText.gameObject.SetActive(false);
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace ShopSystem
             if (countText != null)
             {
                 countText.text = "";
-                countText.enabled = false;
+                countText.gameObject.SetActive(false);
             }
 
             SetHighlight(false);

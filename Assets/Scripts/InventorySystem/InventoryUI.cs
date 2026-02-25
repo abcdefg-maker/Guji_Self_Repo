@@ -1,9 +1,11 @@
 using UnityEngine;
+using ShopSystem;
 
 namespace InventorySystem
 {
     /// <summary>
     /// 物品栏UI控制器
+    /// 使用ShopInventorySlotUI统一显示（支持数量文字和拖拽交换）
     /// </summary>
     public class InventoryUI : MonoBehaviour
     {
@@ -12,7 +14,7 @@ namespace InventorySystem
         [SerializeField] private GameObject inventoryPanel;
 
         [Header("槽位UI")]
-        [SerializeField] private InventorySlotUI[] slotUIs;
+        [SerializeField] private ShopInventorySlotUI[] slotUIs;
 
         private void Start()
         {
@@ -69,7 +71,7 @@ namespace InventorySystem
             if (slotUIs == null || slotUIs.Length == 0)
             {
                 // 尝试从子对象获取
-                slotUIs = GetComponentsInChildren<InventorySlotUI>();
+                slotUIs = GetComponentsInChildren<ShopInventorySlotUI>();
             }
 
             for (int i = 0; i < slotUIs.Length; i++)
@@ -77,6 +79,14 @@ namespace InventorySystem
                 if (slotUIs[i] != null)
                 {
                     slotUIs[i].Initialize(i);
+
+                    // 动态添加拖拽行为
+                    DraggableSlotUI draggable = slotUIs[i].GetComponent<DraggableSlotUI>();
+                    if (draggable == null)
+                    {
+                        draggable = slotUIs[i].gameObject.AddComponent<DraggableSlotUI>();
+                    }
+                    draggable.Initialize(i);
                 }
             }
         }

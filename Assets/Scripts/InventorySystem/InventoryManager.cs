@@ -156,16 +156,24 @@ namespace InventorySystem
             if (index < 0 || index >= maxSlots) return null;
             if (slots[index].IsEmpty) return null;
 
-            Item item = slots[index].itemRef;
-            slots[index].RemoveCount(amount);
+            // 弹出第一个物品返回给调用者
+            Item returnItem = slots[index].PopItem();
 
-            if (item is ToolItem tool && tool == currentEquippedTool)
+            // amount > 1 时，弹出剩余的物品并销毁（用于商店出售等消耗场景）
+            for (int i = 1; i < amount; i++)
+            {
+                Item extra = slots[index].PopItem();
+                if (extra == null) break;
+                Destroy(extra.gameObject);
+            }
+
+            if (returnItem is ToolItem tool && tool == currentEquippedTool)
             {
                 UnequipTool();
             }
 
             OnSlotChanged?.Invoke(index);
-            return item;
+            return returnItem;
         }
 
         public Item GetSelectedItem()
@@ -215,7 +223,7 @@ namespace InventorySystem
             {
                 if (slots[i].CanStackWith(item))
                 {
-                    slots[i].AddCount(1);
+                    slots[i].StackItem(item);
                     item.gameObject.SetActive(false);
                     OnSlotChanged?.Invoke(i);
                     Debug.Log($"物品 {item.itemName} 堆叠到槽位 {i + 1}");
@@ -251,6 +259,29 @@ namespace InventorySystem
         {
             if (index < 0 || index >= maxSlots) return null;
             return slots[index];
+        }
+
+        /// <summary>
+        /// 交换两个槽位的内容
+        /// </summary>
+        public void SwapSlots(int indexA, int indexB)
+        {
+            if (indexA < 0 || indexA >= maxSlots) return;
+            if (indexB < 0 || indexB >= maxSlots) return;
+            if (indexA == indexB) return;
+
+            InventorySlot temp = slots[indexA];
+            slots[indexA] = slots[indexB];
+            slots[indexB] = temp;
+
+            OnSlotChanged?.Invoke(indexA);
+            OnSlotChanged?.Invoke(indexB);
+
+            // 如果涉及当前选中的快捷栏槽位，重新评估工具装备
+            if (indexA == selectedIndex || indexB == selectedIndex)
+            {
+                SelectSlot(selectedIndex);
+            }
         }
         #endregion
 

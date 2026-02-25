@@ -147,8 +147,15 @@ namespace ShopSystem
                 if (slotUI != null)
                 {
                     slotUI.Initialize(slotIndex);
-                    // 背包界面为只读，不订阅点击事件
                     slotUIs[i] = slotUI;
+
+                    // 添加拖拽行为，支持与快捷栏交换物品
+                    DraggableSlotUI draggable = slotObj.GetComponent<DraggableSlotUI>();
+                    if (draggable == null)
+                    {
+                        draggable = slotObj.AddComponent<DraggableSlotUI>();
+                    }
+                    draggable.Initialize(slotIndex);
                 }
             }
         }
