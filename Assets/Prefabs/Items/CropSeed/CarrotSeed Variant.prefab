@@ -110,6 +110,7 @@ MonoBehaviour:
   itemName: CarrotSeed
   itemType: 3
   itemIcon: {fileID: 21300000, guid: 16ac2e03279299a4bb993ecfac137114, type: 3}
+  sellPrice: 10
   canBePickedUp: 1
   attachOffset: {x: 0, y: 0, z: 0}
   cropData: {fileID: 11400000, guid: ac6ddc62cb6cd9e41b036fbed04c4bad, type: 2}

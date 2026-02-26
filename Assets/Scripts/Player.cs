@@ -5,6 +5,7 @@ using Core.Constants;
 using Core.Items;
 using ItemSystem;
 using FarmingSystem;
+using AnimationSystem;
 
 namespace Core.Player
 {
@@ -27,6 +28,8 @@ namespace Core.Player
         private ItemInteractor itemInteractor;
         private ItemPickupHandler pickupHandler;
         private InventoryManager inventoryManager;
+
+        private PlayerAnimatorController animatorController;
 
         private bool isCooldown = false;
         private float cooldownTime = GameConstants.DefaultCooldownTime;
@@ -73,6 +76,8 @@ namespace Core.Player
             {
                 inventoryManager = InventoryManager.Instance;
             }
+
+            animatorController = GetComponentInChildren<PlayerAnimatorController>();
         }
         #endregion
 
@@ -82,6 +87,11 @@ namespace Core.Player
             float horizontal = Input.GetAxisRaw("Horizontal");
             float vertical = Input.GetAxisRaw("Vertical");
             moveDirection = new Vector3(horizontal, 0f, vertical).normalized;
+
+            if (animatorController != null)
+            {
+                animatorController.SetMoveDirection(moveDirection);
+            }
         }
 
         private void HandleMovement()
