@@ -60,6 +60,12 @@ namespace ShopSystem
         /// </summary>
         public void RefreshUI()
         {
+            // 延迟初始化：首次打开商店时 DelayedInit 可能尚未完成
+            if (shopManager == null)
+                shopManager = ShopManager.Instance;
+            if (currencyManager == null)
+                currencyManager = CurrencyManager.Instance;
+
             if (shopManager == null || shopManager.Catalog == null) return;
 
             ClearSlots();
@@ -74,13 +80,16 @@ namespace ShopSystem
                 GameObject slotObj = Instantiate(slotPrefab, gridParent);
                 ShopItemSlotUI slotUI = slotObj.GetComponent<ShopItemSlotUI>();
 
-                if (slotUI != null)
-                {
-                    slotUI.Initialize();
-                    slotUI.Setup(items[i]);
-                    slotUI.OnBuyClicked += HandleBuyClicked;
-                    slotUIs.Add(slotUI);
-                }
+                // 预制体缺少 ShopItemSlotUI / Button 时自动补充
+                if (slotUI == null)
+                    slotUI = slotObj.AddComponent<ShopItemSlotUI>();
+                if (slotObj.GetComponent<UnityEngine.UI.Button>() == null)
+                    slotObj.AddComponent<UnityEngine.UI.Button>();
+
+                slotUI.Initialize();
+                slotUI.Setup(items[i]);
+                slotUI.OnBuyClicked += HandleBuyClicked;
+                slotUIs.Add(slotUI);
             }
         }
         #endregion
@@ -122,15 +131,24 @@ namespace ShopSystem
 
         private void ClearSlots()
         {
+            // 先取消事件订阅
             foreach (var slotUI in slotUIs)
             {
                 if (slotUI != null)
-                {
                     slotUI.OnBuyClicked -= HandleBuyClicked;
-                    Destroy(slotUI.gameObject);
-                }
             }
             slotUIs.Clear();
+
+            // 销毁 gridParent 下所有子物体（防止未追踪的残留槽位堆积）
+            if (gridParent != null)
+            {
+                for (int i = gridParent.childCount - 1; i >= 0; i--)
+                {
+                    GameObject child = gridParent.GetChild(i).gameObject;
+                    child.SetActive(false);
+                    Destroy(child);
+                }
+            }
         }
         #endregion
     }

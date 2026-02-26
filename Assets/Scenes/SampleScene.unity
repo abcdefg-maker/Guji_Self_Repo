@@ -3238,10 +3238,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopRoot
       objectReference: {fileID: 0}
-    - target: {fileID: 2247422247934177494, guid: 77f6cac1a54475148b07187b858afc11, type: 3}
-      propertyPath: closeButton
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 3348395026872976174, guid: 77f6cac1a54475148b07187b858afc11, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 using InventorySystem;
 
@@ -8,9 +9,9 @@ namespace ShopSystem
 {
     /// <summary>
     /// 商店/背包中的物品栏槽位UI（可点击选中）
-    /// 复用InventorySlotUI的组件发现模式
+    /// 实现IPointerClickHandler以接收子物体冒泡上来的点击事件
     /// </summary>
-    public class ShopInventorySlotUI : MonoBehaviour
+    public class ShopInventorySlotUI : MonoBehaviour, IPointerClickHandler
     {
         #region UI References
         [Header("UI引用")]
@@ -55,6 +56,8 @@ namespace ShopSystem
                 countText = GetComponentInChildren<TextMeshProUGUI>(true);
             if (slotButton == null)
                 slotButton = GetComponent<Button>();
+            if (slotButton == null)
+                slotButton = GetComponentInChildren<Button>(true);
 
             if (slotButton != null)
             {
@@ -139,6 +142,16 @@ namespace ShopSystem
             }
 
             SetHighlight(false);
+        }
+        #endregion
+
+        #region IPointerClickHandler
+        /// <summary>
+        /// 接收点击事件（子物体Icon等的点击会冒泡到此处）
+        /// </summary>
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            OnSlotClicked?.Invoke(slotIndex);
         }
         #endregion
 

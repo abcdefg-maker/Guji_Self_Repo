@@ -55,27 +55,31 @@ namespace ShopSystem
                 yield break;
             }
 
-            InitializeGrids();
-
-            // 订阅事件
-            inventoryManager.OnSlotChanged += OnSlotChanged;
-
-            if (currencyManager != null)
+            if (slotUIs == null)
             {
-                currencyManager.OnGoldChanged += OnGoldChanged;
-            }
-
-            if (sellButton != null)
-            {
-                sellButton.onClick.AddListener(OnSellButtonClicked);
-            }
-
-            if (shopManager != null)
-            {
-                shopManager.OnItemSold += OnItemSold;
+                InitializeGrids();
+                SubscribeEvents();
             }
 
             initialized = true;
+        }
+
+        /// <summary>
+        /// 订阅事件（仅调用一次）
+        /// </summary>
+        private void SubscribeEvents()
+        {
+            if (inventoryManager != null)
+                inventoryManager.OnSlotChanged += OnSlotChanged;
+
+            if (currencyManager != null)
+                currencyManager.OnGoldChanged += OnGoldChanged;
+
+            if (sellButton != null)
+                sellButton.onClick.AddListener(OnSellButtonClicked);
+
+            if (shopManager != null)
+                shopManager.OnItemSold += OnItemSold;
         }
 
         private void OnDestroy()
@@ -151,7 +155,22 @@ namespace ShopSystem
         /// </summary>
         public void RefreshUI()
         {
+            // 延迟初始化：首次打开商店时 DelayedInit 可能尚未完成
+            if (inventoryManager == null)
+                inventoryManager = InventoryManager.Instance;
+            if (currencyManager == null)
+                currencyManager = CurrencyManager.Instance;
+            if (shopManager == null)
+                shopManager = ShopManager.Instance;
+
             if (inventoryManager == null) return;
+
+            // 如果网格尚未初始化（首次打开时 Start/DelayedInit 未完成），立即初始化
+            if (slotUIs == null)
+            {
+                InitializeGrids();
+                SubscribeEvents();
+            }
 
             for (int i = 0; i < slotUIs.Length; i++)
             {

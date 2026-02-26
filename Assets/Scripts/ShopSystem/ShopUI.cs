@@ -56,9 +56,21 @@ namespace ShopSystem
             shopManager.OnShopClosed += OnShopClosed;
             shopManager.OnTransactionFailed += OnTransactionFailed;
 
+            // 如果序列化引用丢失，自动在子层级中查找CloseButton
+            if (closeButton == null && shopPanel != null)
+            {
+                Transform closeBtnTransform = shopPanel.transform.Find("CloseButton");
+                if (closeBtnTransform != null)
+                    closeButton = closeBtnTransform.GetComponent<Button>();
+            }
+
             if (closeButton != null)
             {
                 closeButton.onClick.AddListener(OnCloseButtonClicked);
+            }
+            else
+            {
+                Debug.LogWarning("[ShopUI] closeButton 引用为空，无法绑定关闭事件!");
             }
 
             initialized = true;

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CarrotData
   m_EditorClassIdentifier: 
   cropID: crop_001
-  cropName: Carrot
+  cropName: "\u80E1\u841D\u535C"
   description: 
   daysPerStage: 1
   waterCooldown: 5

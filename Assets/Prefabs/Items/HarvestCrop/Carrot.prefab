@@ -47,9 +47,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemID: item_005
-  itemName: Carrot
+  itemName: "\u80E1\u841D\u535C"
   itemType: 4
   itemIcon: {fileID: 21300000, guid: b7c2558d12b15ba4db1c97776df047d8, type: 3}
+  sellPrice: 100
   canBePickedUp: 1
   attachOffset: {x: 0, y: 0, z: 0}
 --- !u!135 &4392903514980459806

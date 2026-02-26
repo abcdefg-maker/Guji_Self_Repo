@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\ShopSystem\ShopManager.cs" />
     <Compile Include="Assets\Scripts\ToolSystem\Actions\WateringAction.cs" />
     <Compile Include="Assets\Scripts\ShopSystem\ShopUI.cs" />
+    <Compile Include="Assets\Scripts\Core\Constants\AnimationConstants.cs" />
     <Compile Include="Assets\Scripts\InventorySystem\InventoryManager.cs" />
     <Compile Include="Assets\Scripts\InventorySystem\DragGhostUI.cs" />
     <Compile Include="Assets\Scripts\ShopSystem\ShopBuyPanelUI.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Assets\Scripts\ShopSystem\CurrencyManager.cs" />
     <Compile Include="Assets\Scripts\ToolSystem\ToolType.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
+    <Compile Include="Assets\Scripts\AnimationSystem\PlayerAnimatorController.cs" />
     <Compile Include="Assets\Scripts\FarmingSystem\CropBase.cs" />
     <Compile Include="Assets\Scripts\TimeSystem\TimeUI.cs" />
     <Compile Include="Assets\Scripts\TimeSystem\DayPhase.cs" />
@@ -155,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
+    <None Include="Assets\Spine\version.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald-Bold - OFL.txt" />
@@ -172,6 +175,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Assets\Animations\protagonist.atlas.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
@@ -1126,6 +1130,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="spine-unity.csproj">
+      <Project>{02FC5F22-7F22-324D-8E3B-F8A974CAF58B}</Project>
+      <Name>spine-unity</Name>
+    </ProjectReference>
+    <ProjectReference Include="spine-unity-editor.csproj">
+      <Project>{CC7A0A43-3B24-076B-C430-019912EFBF21}</Project>
+      <Name>spine-unity-editor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
