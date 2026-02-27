@@ -128,13 +128,14 @@ namespace InventorySystem
         private void HandleScrollWheelInput()
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel");
+            int hotbarSize = HotbarSize;
             if (scroll > 0f)
             {
-                SelectSlot((selectedIndex - 1 + maxSlots) % maxSlots);
+                SelectSlot((selectedIndex - 1 + hotbarSize) % hotbarSize);
             }
             else if (scroll < 0f)
             {
-                SelectSlot((selectedIndex + 1) % maxSlots);
+                SelectSlot((selectedIndex + 1) % hotbarSize);
             }
         }
         #endregion
