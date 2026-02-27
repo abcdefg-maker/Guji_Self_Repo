@@ -18,5 +18,13 @@ MonoBehaviour:
     displayName: "\u80E1\u841D\u535C\u79CD\u5B50"
     icon: {fileID: 21300000, guid: 16ac2e03279299a4bb993ecfac137114, type: 3}
     buyPrice: 10
+  - itemPrefab: {fileID: 2446768330277891898, guid: 0075c9746f85ccc4b805983d008976d8, type: 3}
+    displayName: "\u756A\u8304\u79CD\u5B50"
+    icon: {fileID: 21300000, guid: 0b93f5373befae744a62defc73f6ce74, type: 3}
+    buyPrice: 15
+  - itemPrefab: {fileID: 2446768330277891898, guid: 0075c9746f85ccc4b805983d008976d8, type: 3}
+    displayName: "\u756A\u8304\u79CD\u5B50"
+    icon: {fileID: 21300000, guid: 0b93f5373befae744a62defc73f6ce74, type: 3}
+    buyPrice: 15
   acceptedSellTypes: 04000000000000000300000002000000
   sellPriceMultiplier: 1
